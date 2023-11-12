@@ -1,10 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Title</title>
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <title>Lista del Torneo de Clausura</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" ></script>
+</head>
 
-    </body>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light px-0 py-3">
+
+    <div class="container-xl">
+        <div class="navbar-brand" >
+            <img src="../img/liga1.png" class="h-8" alt="..." style="height: 80px">
+        </div>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav mx-lg-auto">
+                <a class="nav-item nav-link" href="listaClausura.html" id="navClausura">Lista de Clausura</a>
+                <a class="nav-item nav-link" href="listaApertura.html" id="navApertura">Lista de Apertura</a>
+                <a class="nav-item nav-link" href="tablaAperturaClausura.html" id="navAcumulada">Lista Acumulada</a>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function () {
+                var path = window.location.pathname;
+
+
+                if (path.includes("listaClausura.html")) {
+                    $("#navClausura").addClass("active");
+                } else if (path.includes("listaApertura.html")) {
+                    $("#navApertura").addClass("active");
+                } else if (path.includes("tablaAperturaClausura.html")) {
+                    $("#navAcumulada").addClass("active");
+                }
+            });
+        </script>
+
+
+    </div>
+</nav>
+
+<main>
+    <div class="container px-4 py-5">
+        <h1 class="pb-2 border-bottom">Lista de Apertura</h1>
+        <table id="tablaData" class="table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Equipo</th>
+                <th>Partidos Jugados</th>
+                <th>Partidos Ganados</th>
+                <th>Partidos Perdidos</th>
+                <th>Partidos Empatados</th>
+                <th>Goles favor</th>
+                <th>Goles contra</th>
+                <th>Diferencia de goles</th>
+                <th>Puntos</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="tableLiga">
+            </tbody>
+        </table>
+    </div>
+</main>
+<script src="../js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+
+    $(document).ready(function (){
+        $.ajax({
+            url:"http://localhost:8000/api/liga/",
+            method:"GET",
+            dataType :"json",
+        })
+            .done(function (info){
+                console.log(info);
+                var x ="";
+                let h = 0;
+                $.each(info,function (i,iteracion){
+
+                    if(iteracion.liga==="1") {
+                        x += "<tr>";
+                        x += "<td>" + (h+1) + "</td>";
+                        x += "<td>" + iteracion.equipo.nombre + "</td>"
+                        x += "<td>" + iteracion.partidos_jugados + "</td>";
+                        x += "<td>"+ iteracion.partidos_ganados +"</td>";
+                        x += "<td>"+ iteracion.partidos_perdidos +"</td>";
+                        x += "<td>"+ iteracion.partidos_empatados +"</td>";
+                        x += "<td>"+ iteracion.goles_favor +"</td>";
+                        x += "<td>"+ iteracion.goles_contra +"</td>";
+                        x += "<td>"+ iteracion.goles_diferencia +"</td>";
+                        x += "<td>"+ iteracion.puntos +"</td>";
+                        x += "<td><a href='masDetallesEquipoClausura.html?id=" + (iteracion.equipo.id) + "' class='btn btn-warning'>Detalles</a></td>";
+                        x += "</tr>";
+                        h= h +1;
+                    }
+                });
+                $("#tableLiga").html(x);
+
+            })
+            .fail(function (err){
+                console.log(err);
+            })
+
+    })
+</script>
+</body>
 </html>
